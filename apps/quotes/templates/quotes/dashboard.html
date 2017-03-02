@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Quotable Quotes</title>
+    {% load staticfiles %}
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Welcome, {{loggeduser.name}}!</h1>
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li class="message"> <p>{{ message }}<p></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <div class = "container">
+      <h2>Quotable Quotes</h2>
+      <div class = "box1">
+      {% for quote in quotes %}
+      {% if loggeduser not in quote.likers.all %}
+      <div id="text">
+        <div class="quote">
+          <p><b>{{quote.quote_author}}:</b>{{quote.quote}}</p>
+        </div>
+        <form action='/user' method='POST'>
+          {% csrf_token %}
+          <p>Posted By<button class="posted">{{quote.creator.name}}</button></p>
+        </form>
+        <form action="/add" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="qid" value="{{quote.id}}">
+          <button class="add">Add to My List</button>
+        </form>
+      </div> 
+      {% endif %}
+      {% endfor %}
+      </div>
+      <br>
+      <br>
+      <div class = "box2">
+        <h2>Your Favorites</h2>
+        <em>This is where favorite quotes will go</em>
+        {% if not favorites %}
+        <h1>Need to like more</h1>
+        {% else %}
+        {% for quote in favorites %}
+        <p>{{quote.quote}}</p>
+        {%endfor%}
+        {%endif%}
+        <form action='/user' method='POST'>
+          {% csrf_token %}
+          <p>Posted By<button class="posted">{the quote's' author}</button></p>
+        </form>
+        <form action="/remove" method="POST">
+          {% csrf_token %}
+          <button>button to remove from favs</button>
+        </form>
+      </div>
+    </div>
+    <br>
+    <br>
+    <h2>Contribute a Quote:</h2>
+    <form action='/submit' method='POST'>
+    {% csrf_token %}
+    <label>Quoted By:</label><br>
+    <input type='text' name='quoteby'><br>
+    <label>Message:</label><br>
+    <input type='<textarea></textarea>' name='quoteinput'><br>
+    <button>Submit</button><br>
+    </form>
+    <br>
+    <form action="/logout">
+      {% csrf_token %}
+      <button>Log Out</button>
+    </form>
+  </body>
+</html>
