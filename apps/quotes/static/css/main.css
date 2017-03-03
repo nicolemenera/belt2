@@ -8,6 +8,10 @@ body {
   padding: 20px;
 }
 
+p {
+  font-size: 11px;
+}
+
 ul {
   list-style-type: none;
   color: red;
@@ -33,9 +37,8 @@ white-space: nowrap;
 }
 
 #text {
-  border: 1px solid black;
   margin: 8px;
-  font-size: 10px;
+  font-size: 12px;
   max-width: 225px;
   padding: 5px;
 }
@@ -51,6 +54,3 @@ white-space: nowrap;
   color: blue;
 }
 
-.add {
-
-}

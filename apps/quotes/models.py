@@ -107,6 +107,18 @@ class QuoteManager(models.Manager):
     else:
       new_quote = Quote.objects.create(creator=user, quote_author=data['quoteby'], quote=data['quoteinput'])
       return{}
+      
+  def add(self, userid, quoteid):
+    this_quote = Quote.objects.get(id=quoteid)
+    this_user = User.objects.get(id=userid)
+    this_quote.likers.add(this_user)
+    return {}
+    
+  def remove(self, userid, quoteid):
+    this_quote = Quote.objects.get(id=quoteid)
+    this_user = User.objects.get(id=userid)
+    this_quote.likers.remove(this_user)
+    return {}
   
 class Quote(models.Model):
   creator = models.ForeignKey(User, related_name = "createdquotes")

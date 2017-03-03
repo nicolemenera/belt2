@@ -7,11 +7,12 @@
     <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Posts by (User)</h1>
-    <p>Count: 2</p>
+    <h1>Posts by {{userInfo.name}}</h1>
+    <p>Count: {{count}}</p>
+    {% for q in userQuotes %}
     
-    <p>{Quoted By}:<em>{this is where the quote will go}</em></p>
-    
+    <p>{{q.quote_author}}:<em>{{q.quote}}</em></p>
+    {% endfor %}
     <form action="/dashboard">
       {% csrf_token %}
       <button>Dashboard</button>

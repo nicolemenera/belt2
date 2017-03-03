@@ -18,45 +18,38 @@
     <div class = "container">
       <h2>Quotable Quotes</h2>
       <div class = "box1">
-      {% for quote in quotes %}
-      {% if loggeduser not in quote.likers.all %}
+      {% for quote in nonefavorites %}
       <div id="text">
         <div class="quote">
-          <p><b>{{quote.quote_author}}:</b>{{quote.quote}}</p>
+          <p><b>{{quote.quote_author}}:</b> "{{quote.quote}}"</p>
         </div>
-        <form action='/user' method='POST'>
+        <form action='/info/{{quote.creator.id}}' method='POST'>
           {% csrf_token %}
-          <p>Posted By<button class="posted">{{quote.creator.name}}</button></p>
+          <p>Posted By: <button class="posted">{{quote.creator.name}}</button></p>
         </form>
-        <form action="/add" method="POST">
+        <form action="/add/{{quote.id}}" method="POST">
           {% csrf_token %}
-          <input type="hidden" name="qid" value="{{quote.id}}">
           <button class="add">Add to My List</button>
         </form>
       </div> 
-      {% endif %}
       {% endfor %}
       </div>
       <br>
       <br>
       <div class = "box2">
         <h2>Your Favorites</h2>
-        <em>This is where favorite quotes will go</em>
-        {% if not favorites %}
-        <h1>Need to like more</h1>
-        {% else %}
         {% for quote in favorites %}
-        <p>{{quote.quote}}</p>
+        <em>"{{quote.quote}}"</em><br>
+        <form action='/user/{{user.id}}' method='POST'>
+          {% csrf_token %}
+          <input type="hidden" name="quoteid" value="{{quote.id}}">
+          <p>Posted By: <button class="posted">{{quote.creator.name}}</button></p>
+        </form>
+        <form action="/remove/{{quote.id}}" method="POST">
+          {% csrf_token %}
+          <button>Remove</button>
+        </form><br>
         {%endfor%}
-        {%endif%}
-        <form action='/user' method='POST'>
-          {% csrf_token %}
-          <p>Posted By<button class="posted">{the quote's' author}</button></p>
-        </form>
-        <form action="/remove" method="POST">
-          {% csrf_token %}
-          <button>button to remove from favs</button>
-        </form>
       </div>
     </div>
     <br>

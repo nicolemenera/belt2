@@ -42,7 +42,21 @@ def login(request):
 def dashboard(request):
   if 'userid' not in request.session:
     return redirect('/')
-  context = {'loggeduser':User.objects.get(id=request.session['userid']), 'quotes':Quote.objects.all(), 'favorites': Quote.objects.exclude(likers__id=request.session['userid'])}
+  nonefavorites = []
+  favorites = []
+  quotes = Quote.objects.all()
+  loggeduser = User.objects.get(id=request.session['userid'])
+  
+  for q in quotes:
+    foundUser = False
+    for likes in q.likers.all():
+      if likes == loggeduser:
+        foundUser = True
+        favorites.append(q)
+    if foundUser == False:
+      nonefavorites.append(q)
+      print likes.name
+  context = {'loggeduser': loggeduser, 'nonefavorites': nonefavorites, 'favorites': favorites}
   return render(request, 'quotes/dashboard.html', context)
   
 def submit(request):
@@ -59,24 +73,47 @@ def submit(request):
   print "posting quote!"
   return redirect('/dashboard')
   
-def add(request):
+def add(request, quoteid):
   if 'userid' not in request.session:
     return redirect('/')
   print "adding quote to favorites!"
-  quote_id = request.POST['qid']
-  this_quote = Quote.objects.get(id=quote_id)
-  this_user = User.objects.get(id=request.session['userid'])
-  this_quote.likers.add(this_user)
+  addQuote = Quote.objects.add(request.session['userid'], quoteid)
   print request.POST
   return redirect('/dashboard')
   
-def remove(request):
+def remove(request, quoteid):
+  if 'userid' not in request.session:
+    return redirect('/')
   print "removing quote from favorites..."
+  removeQuote = Quote.objects.remove(request.session['userid'], quoteid)
+  print request.POST
   return redirect('/dashboard')
   
-def user(request):
-  print "we here!"
-  return render(request, 'quotes/user.html')
+def user(request, userid):
+  if 'userid' not in request.session:
+    return redirect('/')
+  userQuotes = []
+  noQuotes = []
+  count = 0
+  quotes = Quote.objects.all()
+  userInfo = User.objects.get(id=userid)
+  
+  for q in quotes:
+    foundUser = False
+    if q.creator == userInfo:
+      foundUser = True
+      userQuotes.append(q)
+      count = count + 1
+    if foundUser == False:
+      noQuotes.append("User hasn't created any posts")
+  print userQuotes
+  context = {'userInfo': userInfo, 'noQuotes': noQuotes, 'userQuotes': userQuotes, 'count': count}
+  return render(request, 'quotes/user.html', context)
+  
+def info(request, userid):
+  
+  print "made it to info!"
+  return redirect('/user/'+ userid)
   
 def logout(request):
   print "logging out!"

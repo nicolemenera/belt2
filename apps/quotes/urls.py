@@ -8,8 +8,9 @@ urlpatterns = [
     url(r'^login$', views.login),
     url(r'^dashboard$', views.dashboard),
     url(r'^submit$', views.submit),
-    url(r'^add$', views.add),
-    url(r'^remove$', views.remove),
-    url(r'^user$', views.user),
+    url(r'^add/(?P<quoteid>\d+)$', views.add),
+    url(r'^remove/(?P<quoteid>\d+)$', views.remove),
+    url(r'^info/(?P<userid>\d+)$', views.info),
+    url(r'^user/(?P<userid>\d+)$', views.user),
     url(r'^logout$', views.logout)
 ]
